@@ -16,19 +16,26 @@ export const CustomSlider = ({ ItemCard }: ISlider) => {
     return 0;
   };
 
+  const getSpace = () => {
+    if (refAvatar?.current?.offsetWidth && window?.innerWidth) {
+      return Math.floor(window.innerWidth / refAvatar.current.offsetWidth);
+    }
+    return 0;
+  };
+
   return (
     <div
       className="hide-scrollbar"
       style={{
         width: "100%",
-        overflowX: "scroll",
+        overflowX: "hidden",
         position: "relative",
       }}
     >
       <div
         onClick={() => {
-          if (index > 0) {
-            setIndex((prev) => prev - 2);
+          if (index >= getSpace()) {
+            setIndex((prev) => prev - getSpace());
           }
         }}
         style={{
@@ -80,8 +87,8 @@ export const CustomSlider = ({ ItemCard }: ISlider) => {
 
       <div
         onClick={() => {
-          if (index < ItemCard.length - 2) {
-            setIndex((prev) => prev + 2);
+          if (index < ItemCard.length - getSpace()) {
+            setIndex((prev) => prev + getSpace());
           }
         }}
         style={{
@@ -95,7 +102,7 @@ export const CustomSlider = ({ ItemCard }: ISlider) => {
           alignItems: "center",
           fontSize: "30px",
           zIndex: 101,
-          cursor: index < ItemCard.length - 2 ? "pointer" : "default",
+          cursor: index < ItemCard.length - 1 ? "pointer" : "default",
           opacity: index < ItemCard.length - 2 ? 1 : 0.5,
           color: "white",
         }}

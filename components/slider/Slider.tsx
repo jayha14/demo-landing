@@ -1,11 +1,10 @@
+import Image from 'next/image';
 import { ReactNode, useEffect, useRef, useState } from 'react';
-import { Card, renderCard } from '../../pages/home-banner';
+import { inventory, RenderCard } from '../../pages/home-banner';
 
 interface ISlider {
-  ItemCard: Card[];
+  ItemCard: inventory[];
   numberDisplay: number;
-  iconLeft?: ReactNode;
-  iconRight?: ReactNode;
   dot?: boolean;
   step?: number;
   timeOutPlay?: number;
@@ -14,11 +13,9 @@ interface ISlider {
 export const CustomSlider = ({
   ItemCard,
   numberDisplay,
-  iconLeft,
-  iconRight,
   dot = true,
   step = 1,
-  timeOutPlay = 3000,
+  timeOutPlay = 4000,
 }: ISlider) => {
   const [index, setIndex] = useState(0);
   const [widthCard, setWidthCard] = useState(0);
@@ -59,7 +56,7 @@ export const CustomSlider = ({
     <div
       className="hide-scrollbar"
       style={{
-        width: '100vw',
+        width: '100%',
         overflowX: 'hidden',
         position: 'relative',
       }}
@@ -77,23 +74,27 @@ export const CustomSlider = ({
           bottom: '50%',
           transform: 'translateY(50%)',
           borderRadius: '100%',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          fontSize: '100px',
+          // display: 'flex',
+          // justifyContent: 'center',
+          // alignItems: 'center',
           zIndex: 101,
           cursor: index > 0 ? 'pointer' : 'default',
           opacity: index > 0 ? 1 : 0.5,
-          color: 'red',
+          width: 30,
+          height: 30,
         }}
       >
-        {'<'}
+        <Image src="/arrow-left.svg" alt="" layout="fill" />
       </div>
 
       <div
         style={{
           transform: `translateX(${getTranslate()}px)`,
           display: 'flex',
+          WebkitTransition: '2s ease-out',
+          MozTransition: '2s ease-out',
+          OTransition: '2s ease-out',
+          transition: '2s ease-out',
           // gap: 20,
           marginBottom: 10,
           height: '100%',
@@ -104,12 +105,12 @@ export const CustomSlider = ({
           return (
             <div
               ref={refAvatar}
-              key={item.uuid}
+              key={item.targetId}
               style={{
                 width: `${widthCard}px`,
               }}
             >
-              {renderCard(item)}
+              {RenderCard(item)}
             </div>
           );
         })}
@@ -128,17 +129,18 @@ export const CustomSlider = ({
           transform: 'translateY(50%)',
           borderRadius: '100%',
           display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          fontSize: '100px',
+          // justifyContent: 'center',
+          // alignItems: 'center',
+          // fontSize: '100px',
           zIndex: 101,
           cursor:
             index < ItemCard.length - numberDisplay ? 'pointer' : 'default',
           opacity: index < ItemCard.length - numberDisplay ? 1 : 0.5,
-          color: 'red',
+          width: 30,
+          height: 30,
         }}
       >
-        {'>'}
+        <Image src="/arrow-right.svg" alt="" layout="fill" />
       </div>
 
       {dot ? (
@@ -146,7 +148,7 @@ export const CustomSlider = ({
           style={{
             position: 'absolute',
             right: '50%',
-            bottom: '100px',
+            bottom: '30px',
             transform: 'translateX(50%)',
             borderRadius: '100%',
             display: 'flex',
@@ -154,7 +156,7 @@ export const CustomSlider = ({
             alignItems: 'center',
             fontSize: '100px',
             zIndex: 101,
-            color: 'red',
+            color: 'white',
             gap: 10,
           }}
         >
@@ -165,11 +167,12 @@ export const CustomSlider = ({
                 <div
                   key={index1}
                   style={{
-                    width: 20,
-                    height: 20,
+                    width: 5,
+                    height: 5,
                     borderRadius: '100%',
-                    backgroundColor: 'red',
+                    backgroundColor: 'white',
                     opacity: index1 * step === index ? '100%' : '50%',
+                    scale: index1 * step === index ? '160%' : '100%',
                     cursor: 'pointer',
                   }}
                   onClick={() => setIndex(index1 * step)}

@@ -1,58 +1,77 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { CSSProperties } from 'react';
+import { NextRouter, useRouter } from 'next/router';
+import React, { CSSProperties } from 'react';
 import { CustomSlider } from '../components/slider/Slider';
 
-export type Card = {
-  uuid: string;
+export type inventory = {
+  targetId: string;
   index: number;
   type: 'Slider' | 'List' | 'Image' | 'Title' | 'Components';
-  numberOfDisplay?: number;
+  spectial?: {
+    [key: string]: any;
+  };
   css: CSSProperties;
   title: string;
   link: string;
-  children: Card[];
+  typeList?: inventory;
+  children: inventory[];
 };
 
-export const renderCard = (cardInit: Card) => {
+export const RenderCard = (cardInit: inventory) => {
+  const handleClick = () => {
+    if (cardInit.type !== 'Image' && cardInit.link) {
+      window.open(cardInit.link);
+    }
+  };
   return (
-    <Link
-      href={cardInit.link}
-      style={{
-        pointerEvents:
-          cardInit.type !== 'Image' && cardInit.link ? 'auto' : 'none',
-      }}
-      passHref={true}
-      target="_blank"
-    >
-      <div style={cardInit.css}>{renderOneItem(cardInit)}</div>
-    </Link>
+    // <Link
+    //   href={cardInit.link}
+    //   style={{
+    //     pointerEvents:
+    //       cardInit.type !== 'Image' && cardInit.link ? 'auto' : 'none',
+    //   }}
+    //   passHref={true}
+    //   target="_blank"
+    // >
+    <div style={cardInit.css} onClick={handleClick}>
+      {renderOneItem(cardInit)}{' '}
+    </div>
+    // </Link>
   );
 };
 
-export const renderOneItem = (cardInit: Card) => {
+export const renderOneItem = (cardInit: inventory) => {
   switch (cardInit.type) {
     case 'Image':
-      return <Image src={cardInit.link} alt="" layout="fill" />;
+      return (
+        <div style={cardInit.css}>
+          <Image src={cardInit.link} alt="" layout="fill" />;
+        </div>
+      );
     case 'Title':
       return cardInit.title;
     case 'Slider':
       return (
         <CustomSlider
           ItemCard={cardInit.children}
-          numberDisplay={cardInit?.numberOfDisplay ?? 1}
+          numberDisplay={cardInit?.spectial?.numberOfDisplay ?? 1}
         />
       );
     case 'Components':
       return cardInit.children.map((item) => {
-        return <div key={item.uuid}>{renderCard(item)}</div>;
+        return (
+          <React.Fragment key={item.targetId}>
+            {RenderCard(item)}
+          </React.Fragment>
+        );
       });
   }
 };
 
 export default function HomeBanner() {
-  const value: Card = {
-    uuid: '0',
+  const banner: inventory = {
+    targetId: '0',
     index: 0,
     type: 'Components',
     css: {
@@ -65,16 +84,18 @@ export default function HomeBanner() {
     link: '',
     children: [
       {
-        uuid: '1',
+        targetId: '1',
         index: 0,
         type: 'Slider',
-        numberOfDisplay: 1,
+        spectial: {
+          numberOfDisplay: 1,
+        },
         css: {},
         title: '',
         link: '',
         children: [
           {
-            uuid: '2',
+            targetId: '2',
             index: 0,
             type: 'Components',
             css: {
@@ -86,12 +107,11 @@ export default function HomeBanner() {
               gap: 16,
               position: 'relative',
             },
-
             title: 'Card of Slide',
             link: '',
             children: [
               {
-                uuid: '3',
+                targetId: '3',
                 index: 0,
                 type: 'Image',
                 css: {
@@ -103,11 +123,11 @@ export default function HomeBanner() {
                   zIndex: -1,
                 },
                 title: '',
-                link: '/FQjXZj5XsAIqKmY.jpeg',
+                link: '/banner02.jpeg',
                 children: [],
               },
               {
-                uuid: '4',
+                targetId: '4',
                 index: 0,
                 type: 'Components',
                 css: {
@@ -120,7 +140,7 @@ export default function HomeBanner() {
                 link: '',
                 children: [
                   {
-                    uuid: '5',
+                    targetId: '5',
                     index: 0,
                     type: 'Title',
                     css: {
@@ -131,7 +151,7 @@ export default function HomeBanner() {
                     children: [],
                   },
                   {
-                    uuid: '6',
+                    targetId: '6',
                     index: 0,
                     type: 'Title',
                     css: {
@@ -144,7 +164,7 @@ export default function HomeBanner() {
                 ],
               },
               {
-                uuid: '7',
+                targetId: '7',
                 index: 0,
                 type: 'Title',
                 css: {
@@ -158,7 +178,7 @@ export default function HomeBanner() {
                 children: [],
               },
               {
-                uuid: '8',
+                targetId: '8',
                 index: 0,
                 type: 'Title',
                 css: {
@@ -176,7 +196,7 @@ export default function HomeBanner() {
             ],
           },
           {
-            uuid: '2',
+            targetId: '2',
             index: 0,
             type: 'Components',
             css: {
@@ -193,7 +213,7 @@ export default function HomeBanner() {
             link: '',
             children: [
               {
-                uuid: '3',
+                targetId: '3',
                 index: 0,
                 type: 'Image',
                 css: {
@@ -205,11 +225,11 @@ export default function HomeBanner() {
                   zIndex: -1,
                 },
                 title: '',
-                link: '/Maj FC wins Sanktan 2021.jpeg',
+                link: '/banner03.jpeg',
                 children: [],
               },
               {
-                uuid: '4',
+                targetId: '4',
                 index: 0,
                 type: 'Components',
                 css: {
@@ -222,7 +242,7 @@ export default function HomeBanner() {
                 link: '',
                 children: [
                   {
-                    uuid: '5',
+                    targetId: '5',
                     index: 0,
                     type: 'Title',
                     css: {
@@ -233,7 +253,7 @@ export default function HomeBanner() {
                     children: [],
                   },
                   {
-                    uuid: '6',
+                    targetId: '6',
                     index: 0,
                     type: 'Title',
                     css: {
@@ -246,7 +266,7 @@ export default function HomeBanner() {
                 ],
               },
               {
-                uuid: '7',
+                targetId: '7',
                 index: 0,
                 type: 'Title',
                 css: {
@@ -260,7 +280,7 @@ export default function HomeBanner() {
                 children: [],
               },
               {
-                uuid: '8',
+                targetId: '8',
                 index: 0,
                 type: 'Title',
                 css: {
@@ -278,7 +298,7 @@ export default function HomeBanner() {
             ],
           },
           {
-            uuid: '2',
+            targetId: '2',
             index: 0,
             type: 'Components',
             css: {
@@ -295,7 +315,7 @@ export default function HomeBanner() {
             link: '',
             children: [
               {
-                uuid: '3',
+                targetId: '3',
                 index: 0,
                 type: 'Image',
                 css: {
@@ -307,11 +327,11 @@ export default function HomeBanner() {
                   zIndex: -1,
                 },
                 title: '',
-                link: '/mason.jpeg',
+                link: '/banner4.jpeg',
                 children: [],
               },
               {
-                uuid: '4',
+                targetId: '4',
                 index: 0,
                 type: 'Components',
                 css: {
@@ -324,7 +344,7 @@ export default function HomeBanner() {
                 link: '',
                 children: [
                   {
-                    uuid: '5',
+                    targetId: '5',
                     index: 0,
                     type: 'Title',
                     css: {
@@ -335,7 +355,7 @@ export default function HomeBanner() {
                     children: [],
                   },
                   {
-                    uuid: '6',
+                    targetId: '6',
                     index: 0,
                     type: 'Title',
                     css: {
@@ -348,7 +368,7 @@ export default function HomeBanner() {
                 ],
               },
               {
-                uuid: '7',
+                targetId: '7',
                 index: 0,
                 type: 'Title',
                 css: {
@@ -362,7 +382,7 @@ export default function HomeBanner() {
                 children: [],
               },
               {
-                uuid: '8',
+                targetId: '8',
                 index: 0,
                 type: 'Title',
                 css: {
@@ -380,7 +400,7 @@ export default function HomeBanner() {
             ],
           },
           {
-            uuid: '2',
+            targetId: '2',
             index: 0,
             type: 'Components',
             css: {
@@ -397,7 +417,7 @@ export default function HomeBanner() {
             link: '',
             children: [
               {
-                uuid: '3',
+                targetId: '3',
                 index: 0,
                 type: 'Image',
                 css: {
@@ -409,11 +429,11 @@ export default function HomeBanner() {
                   zIndex: -1,
                 },
                 title: '',
-                link: '/mu1.jpeg',
+                link: '/banner5.jpeg',
                 children: [],
               },
               {
-                uuid: '4',
+                targetId: '4',
                 index: 0,
                 type: 'Components',
                 css: {
@@ -426,7 +446,7 @@ export default function HomeBanner() {
                 link: '',
                 children: [
                   {
-                    uuid: '5',
+                    targetId: '5',
                     index: 0,
                     type: 'Title',
                     css: {
@@ -437,7 +457,7 @@ export default function HomeBanner() {
                     children: [],
                   },
                   {
-                    uuid: '6',
+                    targetId: '6',
                     index: 0,
                     type: 'Title',
                     css: {
@@ -450,7 +470,7 @@ export default function HomeBanner() {
                 ],
               },
               {
-                uuid: '7',
+                targetId: '7',
                 index: 0,
                 type: 'Title',
                 css: {
@@ -464,211 +484,7 @@ export default function HomeBanner() {
                 children: [],
               },
               {
-                uuid: '8',
-                index: 0,
-                type: 'Title',
-                css: {
-                  fontSize: '24px',
-                  fontWeight: 400,
-                  textAlign: 'center',
-                  color: 'white',
-                  padding: '12px 18px',
-                  border: '1px solid white',
-                },
-                title: 'See more information',
-                link: 'https://www.lasinfoniadelreyhotel.com/facilities/detail/1/La_Sinfonia_del_Rey_Restaurant.html',
-                children: [],
-              },
-            ],
-          },
-          {
-            uuid: '2',
-            index: 0,
-            type: 'Components',
-            css: {
-              height: '100vh',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 16,
-              position: 'relative',
-            },
-
-            title: 'Card of Slide',
-            link: '',
-            children: [
-              {
-                uuid: '3',
-                index: 0,
-                type: 'Image',
-                css: {
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  zIndex: -1,
-                },
-                title: '',
-                link: '/room.jpeg',
-                children: [],
-              },
-              {
-                uuid: '4',
-                index: 0,
-                type: 'Components',
-                css: {
-                  display: 'flex',
-                  gap: 2,
-                  fontSize: '24px',
-                  fontWeight: 500,
-                },
-                title: 'Terraço',
-                link: '',
-                children: [
-                  {
-                    uuid: '5',
-                    index: 0,
-                    type: 'Title',
-                    css: {
-                      color: 'white',
-                    },
-                    title: 'Terraço',
-                    link: '',
-                    children: [],
-                  },
-                  {
-                    uuid: '6',
-                    index: 0,
-                    type: 'Title',
-                    css: {
-                      color: '#ceb071',
-                    },
-                    title: 'Sky Bar',
-                    link: '',
-                    children: [],
-                  },
-                ],
-              },
-              {
-                uuid: '7',
-                index: 0,
-                type: 'Title',
-                css: {
-                  fontSize: '24px',
-                  fontWeight: 400,
-                  color: 'white',
-                },
-                title:
-                  'Offering a paranomic view over Hanoi’s legendary Hoan Kiem Lake',
-                link: '',
-                children: [],
-              },
-              {
-                uuid: '8',
-                index: 0,
-                type: 'Title',
-                css: {
-                  fontSize: '24px',
-                  fontWeight: 400,
-                  textAlign: 'center',
-                  color: 'white',
-                  padding: '12px 18px',
-                  border: '1px solid white',
-                },
-                title: 'See more information',
-                link: 'https://www.lasinfoniadelreyhotel.com/facilities/detail/1/La_Sinfonia_del_Rey_Restaurant.html',
-                children: [],
-              },
-            ],
-          },
-          {
-            uuid: '9',
-            index: 0,
-            type: 'Components',
-            css: {
-              height: '100vh',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 16,
-              position: 'relative',
-            },
-
-            title: 'Card of Slide',
-            link: '',
-            children: [
-              {
-                uuid: '10',
-                index: 0,
-                type: 'Image',
-                css: {
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  zIndex: -1,
-                },
-                title: '',
-                link: '/room.jpeg',
-                children: [],
-              },
-              {
-                uuid: '11',
-                index: 0,
-                type: 'Components',
-                css: {
-                  display: 'flex',
-                  gap: 2,
-                  fontSize: '24px',
-                  fontWeight: 500,
-                },
-                title: 'Terraço',
-                link: '',
-                children: [
-                  {
-                    uuid: '12',
-                    index: 0,
-                    type: 'Title',
-                    css: {
-                      color: 'white',
-                    },
-                    title: 'Terraço',
-                    link: '',
-                    children: [],
-                  },
-                  {
-                    uuid: '13',
-                    index: 0,
-                    type: 'Title',
-                    css: {
-                      color: '#ceb071',
-                    },
-                    title: 'Sky Bar',
-                    link: '',
-                    children: [],
-                  },
-                ],
-              },
-              {
-                uuid: '14',
-                index: 0,
-                type: 'Title',
-                css: {
-                  fontSize: '24px',
-                  fontWeight: 400,
-                  color: 'white',
-                },
-                title:
-                  'Offering a paranomic view over Hanoi’s legendary Hoan Kiem Lake',
-                link: '',
-                children: [],
-              },
-              {
-                uuid: '15',
+                targetId: '8',
                 index: 0,
                 type: 'Title',
                 css: {
@@ -688,7 +504,7 @@ export default function HomeBanner() {
         ],
       },
       {
-        uuid: '16',
+        targetId: '16',
         index: 0,
         type: 'Components',
         css: {
@@ -698,13 +514,13 @@ export default function HomeBanner() {
           right: 0,
           padding: '0 100px 50px',
           display: 'flex',
-          justifyContent: 'space-between',
+          justifyContent: 'space-evenly',
         },
         title: '',
         link: '',
         children: [
           {
-            uuid: '17',
+            targetId: '17',
             index: 0,
             type: 'Components',
             css: {},
@@ -712,7 +528,7 @@ export default function HomeBanner() {
             link: '',
             children: [
               {
-                uuid: '18',
+                targetId: '18',
                 index: 0,
                 type: 'Title',
                 css: { color: 'white' },
@@ -721,7 +537,7 @@ export default function HomeBanner() {
                 children: [],
               },
               {
-                uuid: '19',
+                targetId: '19',
                 index: 0,
                 type: 'Components',
                 css: {
@@ -734,16 +550,16 @@ export default function HomeBanner() {
                 link: 'https://www.lasinfoniadelreyhotel.com/facilities/detail/1/La_Sinfonia_del_Rey_Restaurant.html',
                 children: [
                   {
-                    uuid: '20',
+                    targetId: '20',
                     index: 0,
                     type: 'Title',
-                    css: { color: 'white', fontSize: '30px' },
+                    css: { color: 'white', fontSize: '100px' },
                     title: '5',
                     link: '',
                     children: [],
                   },
                   {
-                    uuid: '21',
+                    targetId: '21',
                     index: 0,
                     type: 'Title',
                     css: { color: 'white' },
@@ -752,7 +568,7 @@ export default function HomeBanner() {
                     children: [],
                   },
                   {
-                    uuid: '22',
+                    targetId: '22',
                     index: 0,
                     type: 'Title',
                     css: { color: 'white', paddingLeft: 20, fontSize: '30px' },
@@ -765,7 +581,7 @@ export default function HomeBanner() {
             ],
           },
           {
-            uuid: '23',
+            targetId: '23',
             index: 0,
             type: 'Components',
             css: {},
@@ -773,7 +589,7 @@ export default function HomeBanner() {
             link: '',
             children: [
               {
-                uuid: '24',
+                targetId: '24',
                 index: 0,
                 type: 'Title',
                 css: { color: 'white' },
@@ -782,7 +598,7 @@ export default function HomeBanner() {
                 children: [],
               },
               {
-                uuid: '25',
+                targetId: '25',
                 index: 0,
                 type: 'Components',
                 css: {
@@ -795,16 +611,16 @@ export default function HomeBanner() {
                 link: 'https://www.lasinfoniadelreyhotel.com/facilities/detail/1/La_Sinfonia_del_Rey_Restaurant.html',
                 children: [
                   {
-                    uuid: '26',
+                    targetId: '26',
                     index: 0,
                     type: 'Title',
-                    css: { color: 'white', fontSize: '30px' },
+                    css: { color: 'white', fontSize: '100px' },
                     title: '6',
                     link: '',
                     children: [],
                   },
                   {
-                    uuid: '27',
+                    targetId: '27',
                     index: 0,
                     type: 'Title',
                     css: { color: 'white' },
@@ -813,7 +629,7 @@ export default function HomeBanner() {
                     children: [],
                   },
                   {
-                    uuid: '28',
+                    targetId: '28',
                     index: 0,
                     type: 'Title',
                     css: { color: 'white', paddingLeft: 20, fontSize: '30px' },
@@ -826,7 +642,7 @@ export default function HomeBanner() {
             ],
           },
           {
-            uuid: '29',
+            targetId: '29',
             index: 0,
             type: 'Components',
             css: {},
@@ -834,7 +650,7 @@ export default function HomeBanner() {
             link: '',
             children: [
               {
-                uuid: '30',
+                targetId: '30',
                 index: 0,
                 type: 'Title',
                 css: { color: 'white' },
@@ -843,12 +659,12 @@ export default function HomeBanner() {
                 children: [],
               },
               {
-                uuid: '31',
+                targetId: '31',
                 index: 0,
                 type: 'Title',
                 css: {
                   color: 'white',
-                  fontSize: '30px',
+                  fontSize: '100px',
                 },
                 title: '2',
                 link: 'https://www.lasinfoniadelreyhotel.com/facilities/detail/1/La_Sinfonia_del_Rey_Restaurant.html',
@@ -857,12 +673,12 @@ export default function HomeBanner() {
             ],
           },
           {
-            uuid: '32',
+            targetId: '32',
             index: 0,
             type: 'Components',
             css: {
-              padding: '20px 40px',
-              border: '1px solid white',
+              padding: '20px 150px',
+              border: '0.5px solid gray',
               color: 'white',
               fontSize: '24px',
               textAlign: 'center',
@@ -871,7 +687,7 @@ export default function HomeBanner() {
             link: 'https://www.lasinfoniadelreyhotel.com/facilities/detail/1/La_Sinfonia_del_Rey_Restaurant.html',
             children: [
               {
-                uuid: '33',
+                targetId: '33',
                 index: 0,
                 type: 'Title',
                 css: {},
@@ -880,7 +696,7 @@ export default function HomeBanner() {
                 children: [],
               },
               {
-                uuid: '34',
+                targetId: '34',
                 index: 0,
                 type: 'Title',
                 css: { fontSize: '16px' },
@@ -894,6 +710,629 @@ export default function HomeBanner() {
       },
     ],
   };
+  const roomAndService: inventory = {
+    targetId: '1',
+    index: 0,
+    type: 'Components',
+    css: {
+      width: '100%',
+      height: '100%',
+      position: 'relative',
+      backgroundColor: 'black',
+    },
+    title: '',
+    link: '',
+    children: [
+      {
+        targetId: '1',
+        index: 0,
+        type: 'Slider',
+        spectial: {
+          numberOfDisplay: 3,
+        },
+        css: {},
+        title: '',
+        link: '',
+        children: [
+          {
+            targetId: '2',
+            index: 0,
+            type: 'Components',
+            css: {
+              // height: '100vh',
+              width: '100%',
+              // display: 'flex',
+              // flexDirection: 'column',
+              // alignItems: 'center',
+              // justifyContent: 'center',
+              gap: 16,
+              position: 'relative',
+            },
 
-  return renderCard(value);
+            title: 'Card of Slide',
+            link: '',
+            children: [
+              {
+                targetId: '3',
+                index: 0,
+                type: 'Image',
+                css: {
+                  position: 'relative',
+                  // top: 0,
+                  // left: 0,
+                  // right: 0,
+                  // bottom: 0,
+                  // zIndex: -1,
+                  width: '100%',
+                  aspectRatio: 4 / 3,
+                },
+                title: '',
+                link: '/room1.jpeg',
+                children: [],
+              },
+              {
+                targetId: '4',
+                index: 0,
+                type: 'Components',
+                css: {
+                  // display: 'flex',
+                  // gap: 2,
+                 
+                },
+                title: 'Deluxe Room',
+                link: '',
+                children: [
+                  {
+                    targetId: '5',
+                    index: 0,
+                    type: 'Title',
+                    css: {
+                      color: '#ceb071',
+                      fontSize: '50px',
+                      fontWeight: 500,
+                    },
+                    title: 'Deluxe Room',
+                    link: '',
+                    children: [],
+                  },
+                  {
+                    targetId: '6',
+                    index: 0,
+                    type: 'Title',
+                    css: {
+                      color: 'white',
+                      fontSize: '14px',
+                      fontWeight: 500,
+                    },
+                    title:
+                      'Located on the quiet and well-ventilated basement floor, each room can accommodate 02 adults for the best comfort.',
+                    link: '',
+                    children: [],
+                  },
+                ],
+              },
+              {
+                targetId: '7',
+                index: 0,
+                type: 'Title',
+                css: {
+                  fontSize: '24px',
+                  fontWeight: 400,
+                  color: 'white',
+                },
+                title:
+                  'Offering a paranomic view over Hanoi’s legendary Hoan Kiem Lake',
+                link: '',
+                children: [],
+              },
+              {
+                targetId: '8',
+                index: 0,
+                type: 'Components',
+                css: {
+                 display:'flex',
+                 alignItems: 'center',
+                 gap:50
+                },
+                title:
+                  'Offering a paranomic view over Hanoi’s legendary Hoan Kiem Lake',
+                link: '',
+                children: [
+                  {
+                    targetId: '8',
+                    index: 0,
+                    type: 'Title',
+                    css: {
+                      fontSize: '24px',
+                      fontWeight: 400,
+                      textAlign: 'center',
+                      color: 'white',
+                      padding: '12px 18px',
+                      border: '1px solid white',
+                    },
+                    title: 'See more information',
+                    link: 'https://www.lasinfoniadelreyhotel.com/facilities/detail/1/La_Sinfonia_del_Rey_Restaurant.html',
+                    children: [
+    
+                    ],
+                  },
+                  {
+                    targetId: '8',
+                    index: 0,
+                    type: 'Title',
+                    css: {
+                      fontSize: '24px',
+                      fontWeight: 400,
+                      textAlign: 'center',
+                      color: 'white',
+                      padding: '12px 18px',
+                      border: '1px solid white',
+                    },
+                    title: 'See more information',
+                    link: 'https://www.lasinfoniadelreyhotel.com/facilities/detail/1/La_Sinfonia_del_Rey_Restaurant.html',
+                    children: [
+    
+                    ],
+                  },
+                ],
+              },
+              
+              
+            ],
+          },
+          {
+            targetId: '2',
+            index: 0,
+            type: 'Components',
+            css: {
+              // height: '100vh',
+              width: '100%',
+              // display: 'flex',
+              // flexDirection: 'column',
+              // alignItems: 'center',
+              // justifyContent: 'center',
+              gap: 16,
+              position: 'relative',
+            },
+
+            title: 'Card of Slide',
+            link: '',
+            children: [
+              {
+                targetId: '3',
+                index: 0,
+                type: 'Image',
+                css: {
+                  position: 'relative',
+                  // top: 0,
+                  // left: 0,
+                  // right: 0,
+                  // bottom: 0,
+                  // zIndex: -1,
+                  width: '100%',
+                  aspectRatio: 4 / 3,
+                },
+                title: '',
+                link: '/room1.jpeg',
+                children: [],
+              },
+              {
+                targetId: '4',
+                index: 0,
+                type: 'Components',
+                css: {
+                  // display: 'flex',
+                  // gap: 2,
+                 
+                },
+                title: 'Deluxe Room',
+                link: '',
+                children: [
+                  {
+                    targetId: '5',
+                    index: 0,
+                    type: 'Title',
+                    css: {
+                      color: '#ceb071',
+                      fontSize: '50px',
+                      fontWeight: 500,
+                    },
+                    title: 'Deluxe Room',
+                    link: '',
+                    children: [],
+                  },
+                  {
+                    targetId: '6',
+                    index: 0,
+                    type: 'Title',
+                    css: {
+                      color: 'white',
+                      fontSize: '14px',
+                      fontWeight: 500,
+                    },
+                    title:
+                      'Located on the quiet and well-ventilated basement floor, each room can accommodate 02 adults for the best comfort.',
+                    link: '',
+                    children: [],
+                  },
+                ],
+              },
+              {
+                targetId: '7',
+                index: 0,
+                type: 'Title',
+                css: {
+                  fontSize: '24px',
+                  fontWeight: 400,
+                  color: 'white',
+                },
+                title:
+                  'Offering a paranomic view over Hanoi’s legendary Hoan Kiem Lake',
+                link: '',
+                children: [],
+              },
+              {
+                targetId: '8',
+                index: 0,
+                type: 'Components',
+                css: {
+                 display:'flex',
+                 alignItems: 'center',
+                 gap:50
+                },
+                title:
+                  'Offering a paranomic view over Hanoi’s legendary Hoan Kiem Lake',
+                link: '',
+                children: [
+                  {
+                    targetId: '8',
+                    index: 0,
+                    type: 'Title',
+                    css: {
+                      fontSize: '24px',
+                      fontWeight: 400,
+                      textAlign: 'center',
+                      color: 'white',
+                      padding: '12px 18px',
+                      border: '1px solid white',
+                    },
+                    title: 'See more information',
+                    link: 'https://www.lasinfoniadelreyhotel.com/facilities/detail/1/La_Sinfonia_del_Rey_Restaurant.html',
+                    children: [
+    
+                    ],
+                  },
+                  {
+                    targetId: '8',
+                    index: 0,
+                    type: 'Title',
+                    css: {
+                      fontSize: '24px',
+                      fontWeight: 400,
+                      textAlign: 'center',
+                      color: 'white',
+                      padding: '12px 18px',
+                      border: '1px solid white',
+                    },
+                    title: 'See more information',
+                    link: 'https://www.lasinfoniadelreyhotel.com/facilities/detail/1/La_Sinfonia_del_Rey_Restaurant.html',
+                    children: [
+    
+                    ],
+                  },
+                ],
+              },
+              
+              
+            ],
+          },
+          {
+            targetId: '2',
+            index: 0,
+            type: 'Components',
+            css: {
+              // height: '100vh',
+              width: '100%',
+              // display: 'flex',
+              // flexDirection: 'column',
+              // alignItems: 'center',
+              // justifyContent: 'center',
+              gap: 16,
+              position: 'relative',
+            },
+
+            title: 'Card of Slide',
+            link: '',
+            children: [
+              {
+                targetId: '3',
+                index: 0,
+                type: 'Image',
+                css: {
+                  position: 'relative',
+                  // top: 0,
+                  // left: 0,
+                  // right: 0,
+                  // bottom: 0,
+                  // zIndex: -1,
+                  width: '100%',
+                  aspectRatio: 4 / 3,
+                },
+                title: '',
+                link: '/room1.jpeg',
+                children: [],
+              },
+              {
+                targetId: '4',
+                index: 0,
+                type: 'Components',
+                css: {
+                  // display: 'flex',
+                  // gap: 2,
+                 
+                },
+                title: 'Deluxe Room',
+                link: '',
+                children: [
+                  {
+                    targetId: '5',
+                    index: 0,
+                    type: 'Title',
+                    css: {
+                      color: '#ceb071',
+                      fontSize: '50px',
+                      fontWeight: 500,
+                    },
+                    title: 'Deluxe Room',
+                    link: '',
+                    children: [],
+                  },
+                  {
+                    targetId: '6',
+                    index: 0,
+                    type: 'Title',
+                    css: {
+                      color: 'white',
+                      fontSize: '14px',
+                      fontWeight: 500,
+                    },
+                    title:
+                      'Located on the quiet and well-ventilated basement floor, each room can accommodate 02 adults for the best comfort.',
+                    link: '',
+                    children: [],
+                  },
+                ],
+              },
+              {
+                targetId: '7',
+                index: 0,
+                type: 'Title',
+                css: {
+                  fontSize: '24px',
+                  fontWeight: 400,
+                  color: 'white',
+                },
+                title:
+                  'Offering a paranomic view over Hanoi’s legendary Hoan Kiem Lake',
+                link: '',
+                children: [],
+              },
+              {
+                targetId: '8',
+                index: 0,
+                type: 'Components',
+                css: {
+                 display:'flex',
+                 alignItems: 'center',
+                 gap:50
+                },
+                title:
+                  'Offering a paranomic view over Hanoi’s legendary Hoan Kiem Lake',
+                link: '',
+                children: [
+                  {
+                    targetId: '8',
+                    index: 0,
+                    type: 'Title',
+                    css: {
+                      fontSize: '24px',
+                      fontWeight: 400,
+                      textAlign: 'center',
+                      color: 'white',
+                      padding: '12px 18px',
+                      border: '1px solid white',
+                    },
+                    title: 'See more information',
+                    link: 'https://www.lasinfoniadelreyhotel.com/facilities/detail/1/La_Sinfonia_del_Rey_Restaurant.html',
+                    children: [
+    
+                    ],
+                  },
+                  {
+                    targetId: '8',
+                    index: 0,
+                    type: 'Title',
+                    css: {
+                      fontSize: '24px',
+                      fontWeight: 400,
+                      textAlign: 'center',
+                      color: 'white',
+                      padding: '12px 18px',
+                      border: '1px solid white',
+                    },
+                    title: 'See more information',
+                    link: 'https://www.lasinfoniadelreyhotel.com/facilities/detail/1/La_Sinfonia_del_Rey_Restaurant.html',
+                    children: [
+    
+                    ],
+                  },
+                ],
+              },
+              
+              
+            ],
+          },
+          {
+            targetId: '2',
+            index: 0,
+            type: 'Components',
+            css: {
+              // height: '100vh',
+              width: '100%',
+              // display: 'flex',
+              // flexDirection: 'column',
+              // alignItems: 'center',
+              // justifyContent: 'center',
+              gap: 16,
+              position: 'relative',
+            },
+
+            title: 'Card of Slide',
+            link: '',
+            children: [
+              {
+                targetId: '3',
+                index: 0,
+                type: 'Image',
+                css: {
+                  position: 'relative',
+                  // top: 0,
+                  // left: 0,
+                  // right: 0,
+                  // bottom: 0,
+                  // zIndex: -1,
+                  width: '100%',
+                  aspectRatio: 4 / 3,
+                },
+                title: '',
+                link: '/room1.jpeg',
+                children: [],
+              },
+              {
+                targetId: '4',
+                index: 0,
+                type: 'Components',
+                css: {
+                  // display: 'flex',
+                  // gap: 2,
+                 
+                },
+                title: 'Deluxe Room',
+                link: '',
+                children: [
+                  {
+                    targetId: '5',
+                    index: 0,
+                    type: 'Title',
+                    css: {
+                      color: '#ceb071',
+                      fontSize: '50px',
+                      fontWeight: 500,
+                    },
+                    title: 'Deluxe Room',
+                    link: '',
+                    children: [],
+                  },
+                  {
+                    targetId: '6',
+                    index: 0,
+                    type: 'Title',
+                    css: {
+                      color: 'white',
+                      fontSize: '14px',
+                      fontWeight: 500,
+                    },
+                    title:
+                      'Located on the quiet and well-ventilated basement floor, each room can accommodate 02 adults for the best comfort.',
+                    link: '',
+                    children: [],
+                  },
+                ],
+              },
+              {
+                targetId: '7',
+                index: 0,
+                type: 'Title',
+                css: {
+                  fontSize: '24px',
+                  fontWeight: 400,
+                  color: 'white',
+                },
+                title:
+                  'Offering a paranomic view over Hanoi’s legendary Hoan Kiem Lake',
+                link: '',
+                children: [],
+              },
+              {
+                targetId: '8',
+                index: 0,
+                type: 'Components',
+                css: {
+                 display:'flex',
+                 alignItems: 'center',
+                 gap:50
+                },
+                title:
+                  'Offering a paranomic view over Hanoi’s legendary Hoan Kiem Lake',
+                link: '',
+                children: [
+                  {
+                    targetId: '8',
+                    index: 0,
+                    type: 'Title',
+                    css: {
+                      fontSize: '24px',
+                      fontWeight: 400,
+                      textAlign: 'center',
+                      color: 'white',
+                      padding: '12px 18px',
+                      border: '1px solid white',
+                    },
+                    title: 'See more information',
+                    link: 'https://www.lasinfoniadelreyhotel.com/facilities/detail/1/La_Sinfonia_del_Rey_Restaurant.html',
+                    children: [
+    
+                    ],
+                  },
+                  {
+                    targetId: '8',
+                    index: 0,
+                    type: 'Title',
+                    css: {
+                      fontSize: '24px',
+                      fontWeight: 400,
+                      textAlign: 'center',
+                      color: 'white',
+                      padding: '12px 18px',
+                      border: '1px solid white',
+                    },
+                    title: 'See more information',
+                    link: 'https://www.lasinfoniadelreyhotel.com/facilities/detail/1/La_Sinfonia_del_Rey_Restaurant.html',
+                    children: [
+    
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  };
+  const mainTemplate: inventory = {
+    targetId: '3',
+    index: 0,
+    type: 'Components',
+    css: {
+      width: '100%',
+      height: '100%',
+      position: 'relative',
+      backgroundColor: 'black',
+    },
+    title: '',
+    link: '',
+    children: [banner, roomAndService],
+  };
+  return RenderCard(mainTemplate);
 }
